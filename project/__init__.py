@@ -5,15 +5,18 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_login import current_user, login_required
 from flask_mail import Mail
-from flask_migrate import Migrate
-import os
+from flask_migrate import Migrate, MigrateCommand
 
+
+import os
 
 # CONFIG
 app = Flask(__name__, instance_relative_config=True)
-app.config.from_object(os.environ['APP_SETTINGS'])
-
+app.config.from_object(os.environ.get('APP_SETTINGS'))
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
+
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 mail = Mail(app)
@@ -62,3 +65,6 @@ def page_forbidden(e):
 @app.errorhandler(410)
 def page_gone(e):
     return render_template('410.html'), 410
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,10 +1,13 @@
 from project import db, bcrypt
+
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 
 
 class User(db.Model):
     __tablename__ = 'users'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String, unique=True, nullable=False)
     _password = db.Column(db.Binary(60), nullable=False)
@@ -73,6 +76,7 @@ class User(db.Model):
 
 class Items(db.Model):
     __tablename__ = 'items'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     notes = db.Column(db.String, nullable=True)
